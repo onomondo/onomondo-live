@@ -77,11 +77,6 @@ original@^1.0.0:
   dependencies:
     url-parse "^1.4.3"
 
-pcap-generator@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/pcap-generator/-/pcap-generator-0.1.0.tgz#9430008fb9260cda769d6756c25f203167b5ec0f"
-  integrity sha512-jrTuDz9mPClOYLF16kmYD10aVKg6nFr6/SjAk0MjTBwrNN+lLJqWEtzZS1MBqJvdLwrdXYGy3PyOojyiGYjERg==
-
 pretty-bytes@^5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/pretty-bytes/-/pretty-bytes-5.3.0.tgz#f2849e27db79fb4d6cfe24764fc4134f165989f2"
