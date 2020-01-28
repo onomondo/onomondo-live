@@ -16,7 +16,10 @@ let capturedPackets = 0
 let capturedBytes = 0
 
 if (!hasAllParams) {
-  console.error('Usage: onomondo-live --token=a1b2c3 --sim=123456789 --filename=output.pcap')
+  console.error('Usage:')
+  console.error('  onomondo-live --token=a1b2c3 --sim=123456789 --filename=output.pcap\n')
+  console.error('You need to use the ID of one of your SIMs, and an API token.')
+  console.error('It is also possible to use the token used in the app. Get this by visiting app.onomondo.com and look at the network tab in developer tools.')
   process.exit(1)
 }
 
