@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const pcapGenerator = require('./pcap-generator')
-const monitorSocket = require('./socket')
+const io = require('socket.io-client')
 const minimist = require('minimist')
 const prettyBytes = require('pretty-bytes')
 const log = require('single-line-log').stdout
@@ -34,11 +34,11 @@ pcapGenerator.writeHeader({ filename })
 connect()
 
 function connect () {
-  const socket = monitorSocket(`${apiUrl}/monitor?from=onomondo-live`)
+  const socket = io(apiUrl, { path: '/monitor' })
 
-  socket.on('open', () => {
+  socket.on('connect', () => {
     console.log('Connected')
-    socket.send('authenticate', token)
+    socket.emit('authenticate', token)
   })
 
   socket.on('error', err => {
@@ -52,16 +52,17 @@ function connect () {
     console.error(`Error: ${err}`)
   })
 
-  socket.on('close', () => {
+  socket.on('disconnect', () => {
     console.log('Connection closed. Trying to re-establish')
-    socket.kill()
+    socket.disconnect()
     setTimeout(connect, 1000)
   })
 
   socket.on('authenticated', () => {
     console.log('Authenticated')
-    socket.send('attach', simId)
+    socket.emit('attach', simId)
   })
+
   socket.on('attached', ({ id, ip }) => {
     console.log(`Attached. SIM id=${id}. ip=${ip}`)
   })
