@@ -1,15 +1,25 @@
 # onomondo-live
 
-Get packets sent from your devices, and save them as a PCAP file.
+Intercept all data between a device and the network, seen from the network's perspective.
+
+Output to a PCAP file, or pipe to another tool that can read PCAP files (like Wireshark).
 
 ## Installation
 
-`$ npm install onomondo-live -g`
+You need to have [Mode](https://nodejs.org/en/download/) and `npm` installed on your system.
+
+`$ npm install onomondo-live --global`
 
 ## Usage
 
-You need to use the ID of one of your SIMs, and an API token.
+Write to file:
+`$ onomondo-live --token=a1b2c3 --sim=012345678 --filename=output.pcap`
 
-You can also use the token used in the app. Get this by visiting `app.onomondo.com` and look at the network tab in developer tools.
+Pipe to Wireshark:
+`$ onomondo-live --token=a1b2c3 --sim=012345678 | wireshark -k -i -`
 
-`$ onomondo-live --token=a1b2c4 --sim=000000001 --filename=output.pcap`
+You need to use the ID of one or more of your SIMs, and an API token.
+
+It is also possible to use the token used in the app. Get this by visiting https://app.onomondo.com and look at the network tab in developer tools.
+
+If you want to listen to multiple SIMs you can supply multiple --sim params, like this: `--sim=111111111 --sim=222222222`
