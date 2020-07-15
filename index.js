@@ -12,9 +12,11 @@ const token = argv.token
 const simIds = typeof argv.sim === 'string' ? [argv.sim] : argv.sim
 const filename = argv.filename
 const apiUrl = argv.api || 'https://api.onomondo.com'
-const isPiped = !process.stdout.isTTY
+const isWritingToStdout = argv._.includes('-')
+const isWritingToFile = !!filename
 const hasAllRequiredParams = token && simIds && simIds.length
-const isPipedOrWrittenToFile = isPiped || filename
+const isWritingToStdoutOrFile = isWritingToStdout || isWritingToFile
+const isWritingToStdoutAndFile = isWritingToStdout && isWritingToFile
 let capturedPackets = 0
 let capturedBytes = 0
 
@@ -27,8 +29,11 @@ if (!hasAllRequiredParams) {
     'Write to file:',
     'onomondo-live --token=a1b2c3 --sim=012345678 --filename=output.pcap',
     '',
-    'Pipe to Wireshark:',
-    'onomondo-live --token=a1b2c3 --sim=012345678 | wireshark -k -i -',
+    'Write to standard output:',
+    'onomondo-live --token=a1b2c3 --sim=012345678 -',
+    '',
+    'Pipe to Wireshark example:',
+    'onomondo-live --token=a1b2c3 --sim=012345678 - | wireshark -k -i -',
     '',
     'You need to use the ID of one or more of your SIMs, and an API token.',
     'It is also possible to use the token used in the app. Get this by visiting https://app.onomondo.com and look at the network tab in developer tools.',
@@ -38,20 +43,23 @@ if (!hasAllRequiredParams) {
   process.exit(1)
 }
 
-if (!isPipedOrWrittenToFile) {
-  console.error([
-
-  ].join('\n'))
+if (!isWritingToStdoutOrFile) {
+  console.error('You need to either write to file, or to standard output. Not both.')
   process.exit(1)
 }
 
-if (isPiped) {
+if (!isWritingToStdoutOrFile) {
+  console.error('You need to either write to file, or to standard output.')
+  process.exit(1)
+}
+
+if (isWritingToStdout) {
   // Kill process if the process piped to is closed, and not writing to a file
   process.stdout.on('error', () => { }) // ignore errors
   process.stdout.on('close', () => process.exit(0))
 }
 
-pcapGenerator.writeHeader({ filename, stdout: isPiped })
+pcapGenerator.writeHeader({ filename, stdout: isWritingToStdout })
 
 connect()
 
@@ -98,6 +106,6 @@ function connect () {
 
     log(`Captured: ${capturedPackets} packet${capturedPackets === 1 ? '' : 's'} (${prettyBytes(capturedBytes)})`)
 
-    pcapGenerator.appendPacket({ packet, filename, timestamp, stdout: isPiped })
+    pcapGenerator.appendPacket({ packet, filename, timestamp, stdout: isWritingToStdout })
   })
 }

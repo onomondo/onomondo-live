@@ -6,8 +6,9 @@ Output to a PCAP file, or pipe to another tool that can read PCAP files (like Wi
 
 ## Installation
 
-You need to have [Node](https://nodejs.org/en/download/) and `npm` installed on your system.
+You need to have [node](https://nodejs.org/en/download/) and `npm` installed on your system.
 
+Then run this command:
 `$ npm install onomondo-live --global`
 
 ## Usage
@@ -15,8 +16,11 @@ You need to have [Node](https://nodejs.org/en/download/) and `npm` installed on 
 Write to file:
 `$ onomondo-live --token=a1b2c3 --sim=012345678 --filename=output.pcap`
 
-Pipe to Wireshark:
-`$ onomondo-live --token=a1b2c3 --sim=012345678 | wireshark -k -i -`
+Write to standard output:
+`$ onomondo-live --token=a1b2c3 --sim=012345678 -`
+
+Pipe to Wireshark example:
+`$ onomondo-live --token=a1b2c3 --sim=012345678 - | wireshark -k -i -`
 
 You need to use the ID of one or more of your SIMs, and an API token.
 
