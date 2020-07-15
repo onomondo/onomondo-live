@@ -6,7 +6,7 @@ Output to a PCAP file, or pipe to another tool that can read PCAP files (like Wi
 
 ## Installation
 
-You need to have [Mode](https://nodejs.org/en/download/) and `npm` installed on your system.
+You need to have [Node](https://nodejs.org/en/download/) and `npm` installed on your system.
 
 `$ npm install onomondo-live --global`
 
