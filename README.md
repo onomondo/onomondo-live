@@ -1,6 +1,6 @@
 # onomondo-live
 
-Intercept all data between a device and the network, seen from the network's perspective.
+Capture all traffic between a device and the network, seen from the network's perspective.
 
 Output to a PCAP file, or pipe to another tool that can read PCAP files (like Wireshark).
 
