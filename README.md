@@ -13,9 +13,7 @@ Then run this command:
 
 ## Usage
 
-You need to use the ID of one or more of your SIMs, and an API token.
-
-It is also possible to use the token used in the app. Get this by visiting https://app.onomondo.com and look at the network tab in developer tools.
+You need to use the ID of one or more of your SIMs, and an API key (It is also possible to use the token used in the app. Get this by visiting https://app.onomondo.com and look at the network tab in developer tools).
 
 If you want to listen to multiple SIMs you can supply multiple --sim params, like this: `--sim=111111111 --sim=222222222`
 
