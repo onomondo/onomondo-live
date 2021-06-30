@@ -2,7 +2,7 @@
   "name": "onomondo-live",
   "bin": "./index.js",
   "repository": "git@github.com:onomondo/onomondo-live.git",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
