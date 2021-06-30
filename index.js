@@ -20,9 +20,10 @@ const isWritingToStdoutAndFile = isWritingToStdout && isWritingToFile
 let capturedPackets = 0
 let capturedBytes = 0
 
+console.error(`Onomondo Live ${pkgJson.version}\n`)
+
 if (!hasAllRequiredParams) {
   console.error([
-    `Onomondo Live ${pkgJson.version}`,
     'Intercept all data between a device and the network, seen from the network\'s perspective.',
     'Output to a PCAP file, or pipe to another tool that can read PCAP files (like Wireshark).',
     '',
@@ -71,7 +72,7 @@ function connect () {
     socket.emit('authenticate', token)
   })
 
-  socket.on('error', err => {
+  function onerror (err) {
     const isNotAuthenticated = err === 'Not authenticated'
 
     if (isNotAuthenticated) {
@@ -80,7 +81,10 @@ function connect () {
     }
 
     console.error(`Error: ${err}`)
-  })
+  }
+
+  socket.on('error', onerror)
+  socket.on('subscribe-error', onerror)
 
   socket.on('disconnect', () => {
     console.error('Connection closed. Trying to re-establish')
