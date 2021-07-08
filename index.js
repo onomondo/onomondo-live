@@ -19,6 +19,7 @@ const isWritingToStdoutOrFile = isWritingToStdout || isWritingToFile
 const isWritingToStdoutAndFile = isWritingToStdout && isWritingToFile
 let capturedPackets = 0
 let capturedBytes = 0
+let isAuthenticated = false
 
 console.error(`Onomondo Live ${pkgJson.version}\n`)
 
@@ -86,13 +87,18 @@ function connect () {
   socket.on('error', onerror)
   socket.on('subscribe-error', onerror)
 
-  socket.on('disconnect', () => {
+  socket.on('disconnect', err => {
+    const hasServerForcefullyDisconnectedClient = err === 'io server disconnect'
+    if (hasServerForcefullyDisconnectedClient && isAuthenticated) return console.error('The server disconnected you')
+    if (hasServerForcefullyDisconnectedClient && !isAuthenticated) return console.error('The server disconnected you. Is the token correct?')
+
     console.error('Connection closed. Trying to re-establish')
     socket.disconnect()
     setTimeout(connect, 1000)
   })
 
   socket.on('authenticated', () => {
+    isAuthenticated = true
     console.error('Authenticated')
     simIds.forEach(simId => socket.emit('subscribe:packets', simId))
   })
