@@ -45,7 +45,7 @@ if (!hasAllRequiredParams) {
   process.exit(1)
 }
 
-if (!isWritingToStdoutAndFile) {
+if (isWritingToStdoutAndFile) {
   console.error('You need to either write to file, or to standard output. Not both.')
   process.exit(1)
 }
