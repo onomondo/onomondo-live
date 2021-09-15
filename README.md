@@ -2,7 +2,7 @@
 
 Capture all traffic between a device and the network, seen from the network's perspective.
 
-Output to a PCAP file, or pipe to another tool that can read PCAP files (like Wireshark).
+Output to a pcap file, or pipe to another tool that can read pcap files (like Wireshark).
 
 ## Installation
 
@@ -13,16 +13,16 @@ Then run this command:
 
 ## Usage
 
-You need to use the ID of one or more of your SIMs, and an API key.
+You need to use the id of one or more of your sims, and an Onomondo api key.
 
-If you want to listen to multiple SIMs you can supply multiple --sim params, like this: `--sim=111111111 --sim=222222222`
+If you want to listen to multiple sims you can supply multiple --sim params, like this: `--sim=111111111 --sim=222222222`
 
 ### Write to file
-`$ onomondo-live --token=a1b2c3 --sim=012345678 --filename=output.pcap`
+`$ onomondo-live --key=onok_a1b2c3.f00ba5 --sim=012345678 --filename=output.pcap`
 
 ### Write to standard output
-`$ onomondo-live --token=a1b2c3 --sim=012345678 -`
+`$ onomondo-live --key=onok_a1b2c3.f00ba5 --sim=012345678 -`
 
 ### Pipe to Wireshark example
-`$ onomondo-live --token=a1b2c3 --sim=012345678 - | wireshark -k -i -`
+`$ onomondo-live --key=onok_a1b2c3.f00ba5 --sim=012345678 - | wireshark -k -i -`
 
