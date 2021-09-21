@@ -28,12 +28,12 @@ async function checkPrerequisites() {
   const publicVersion = await getPublicVersion()
   const isUsingCorrectVersion = pkgJson.version === publicVersion
   const disallowedParams = allParams.filter(param => !ALLOWED_PARAMS.includes(param))
-  const hasAllRequiredParams = apiKey && simIds && simIds.length
+  const hasAllRequiredParams = apiKey && simIds?.length
   const hasOnlyAllowedParams = disallowedParams.length === 0
   const hasNoParameters = allParams.includes('_') && allParams.length === 1
   const isWritingToStdoutOrFile = isWritingToStdout || isWritingToFile
   const isWritingToStdoutAndFile = isWritingToStdout && isWritingToFile
-  const areSimsCorrectLength = simIds.filter(id => id.length === 9).length > 0
+  const areSimsCorrectLength = simIds?.filter(id => id.length === 9).length > 0
 
   if (isUsingCorrectVersion) console.error(`Onomondo Live ${pkgJson.version}\n`)
   if (!isUsingCorrectVersion) console.error(`Onomondo Live ${pkgJson.version}. You are currently using an outdated version. The latest is ${publicVersion}.\n`)
