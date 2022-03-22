@@ -77,7 +77,7 @@ function run () {
 }
 
 function connect () {
-  const socket = io(apiUrl, { path: '/monitor' })
+  const socket = io(apiUrl, { path: '/monitor', withCredentials: true })
 
   socket.on('connect', () => {
     socket.emit('authenticate', apiKey)
