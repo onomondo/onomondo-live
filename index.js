@@ -91,7 +91,8 @@ function connect () {
         if (cookieString.includes(`${COOKIE_NAME}=`)) {
           const cookieValue = cookie.parse(cookieString)
           socket.io.opts.extraHeaders = {
-            cookie: `${COOKIE_NAME}=${cookieValue[COOKIE_NAME]}`
+            cookie: `${COOKIE_NAME}=${cookieValue[COOKIE_NAME]}`,
+            'user-agent': `node-XMLHttpRequest onomondo-live@v${pkgJson.version}`
           }
         }
       })
