@@ -78,6 +78,25 @@ function run () {
 
 function connect () {
   const socket = io(apiUrl, { path: '/monitor', withCredentials: true })
+  const COOKIE_NAME = 'AWSALB'
+
+  // https://socket.io/how-to/deal-with-cookies
+  socket.io.on('open', () => {
+    socket.io.engine.transport.on('pollComplete', () => {
+      const request = socket.io.engine.transport.pollXhr.xhr
+      const cookieHeader = request.getResponseHeader('set-cookie')
+      if (!cookieHeader) return
+
+      cookieHeader.forEach(cookieString => {
+        if (cookieString.includes(`${COOKIE_NAME}=`)) {
+          const cookieValue = cookie.parse(cookieString)
+          socket.io.opts.extraHeaders = {
+            cookie: `${COOKIE_NAME}=${cookieValue[COOKIE_NAME]}`
+          }
+        }
+      })
+    })
+  })
 
   socket.on('connect', () => {
     socket.emit('authenticate', apiKey)
