@@ -77,7 +77,13 @@ function run () {
 }
 
 function connect () {
-  const socket = io(apiUrl, { path: '/monitor', withCredentials: true })
+  const socket = io(apiUrl, {
+    path: '/monitor',
+    withCredentials: true,
+    extraHeaders: {
+      'user-agent': `node-XMLHttpRequest onomondo-live/v${pkgJson.version}`
+    }
+  })
   const COOKIE_NAME = 'AWSALB'
 
   // https://socket.io/how-to/deal-with-cookies
@@ -92,7 +98,7 @@ function connect () {
           const cookieValue = cookie.parse(cookieString)
           socket.io.opts.extraHeaders = {
             cookie: `${COOKIE_NAME}=${cookieValue[COOKIE_NAME]}`,
-            'user-agent': `node-XMLHttpRequest onomondo-live@v${pkgJson.version}`
+            'user-agent': `node-XMLHttpRequest onomondo-live/v${pkgJson.version}`
           }
         }
       })
