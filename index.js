@@ -124,9 +124,11 @@ function connect () {
   socket.on('subscribe-error', onerror)
 
   socket.on('disconnect', err => {
+    const isTransportError = 'transport error'
     const hasServerForcefullyDisconnectedClient = err === 'io server disconnect'
     if (hasServerForcefullyDisconnectedClient && isAuthenticated) return console.error('The server disconnected you')
     if (hasServerForcefullyDisconnectedClient && !isAuthenticated) return console.error('The server disconnected you. Is the api key correct?')
+    if (isTransportError && !isAuthenticated) return
 
     console.error('Connection closed. Trying to re-establish')
     socket.disconnect()
