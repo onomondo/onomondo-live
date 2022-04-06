@@ -4,6 +4,9 @@
   "repository": "git@github.com:onomondo/onomondo-live.git",
   "version": "4.0.3",
   "main": "index.js",
+  "engines": {
+    "node": ">=14.8.0"
+  },
   "license": "MIT",
   "dependencies": {
     "minimist": "^1.2.3",
