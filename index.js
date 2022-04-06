@@ -7,6 +7,7 @@ const prettyBytes = require('pretty-bytes')
 const log = require('single-line-log').stderr
 const pkgJson = require('./package.json')
 const getPackageJson = require('package-json')
+const cookie = require('cookie')
 
 const ALLOWED_PARAMS = ['token', 'key', 'sim', 'filename', 'api', '-', '_']
 
