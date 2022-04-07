@@ -25,7 +25,7 @@ let isAuthenticated = false
 
 checkPrerequisites().then(run)
 
-async function checkPrerequisites() {
+async function checkPrerequisites () {
   const publicVersion = await getPublicVersion()
   const isUsingCorrectVersion = pkgJson.version === publicVersion
   const disallowedParams = allParams.filter(param => !ALLOWED_PARAMS.includes(param))
@@ -145,7 +145,7 @@ function connect () {
     console.error(`Attached. SIM id=${simId}. ip=${ip}`)
   })
 
-  socket.on('packets', ({ simId, packet: hexString }) => {
+  socket.on('packets', ({ packet: hexString }) => {
     const timestamp = Date.now()
     const packet = Buffer.from(hexString, 'hex')
 
