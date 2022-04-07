@@ -2,7 +2,7 @@
 const fs = require('fs')
 
 module.exports = {
-  writeHeader ({ filename, stdout } ) {
+  writeHeader ({ filename, stdout }) {
     const opts = {
       magicNumber: 2712847316,
       majorVersion: 2,
@@ -35,7 +35,7 @@ module.exports = {
     packetHeader.writeUInt32BE(packet.length, 8) // 4
     packetHeader.writeUInt32BE(packet.length, 12) // 4
 
-    const buffer = Buffer.concat([ packetHeader, packet ])
+    const buffer = Buffer.concat([packetHeader, packet])
 
     if (stdout) process.stdout.write(buffer)
     if (filename) fs.appendFileSync(filename, buffer)
