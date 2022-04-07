@@ -22,6 +22,7 @@ const isWritingToFile = !!filename
 let capturedPackets = 0
 let capturedBytes = 0
 let isAuthenticated = false
+let unAuthenticatedTransportErrorCount = 0
 
 checkPrerequisites().then(run)
 
@@ -58,7 +59,7 @@ async function checkPrerequisites () {
       'If you want to listen to multiple sims you can supply multiple --sim params, like this: --sim=111111111 --sim=222222222'
     ].join('\n'))
   }
-  if (!hasOnlyAllowedParams) exit(`You are using illegal paramters: ${disallowedParams.join(', ')}`)
+  if (!hasOnlyAllowedParams) exit(`You are using illegal parameters: ${disallowedParams.join(', ')}`)
   if (!hasAllRequiredParams && !apiKey) exit('You are missing a required parameter: --key')
   if (!hasAllRequiredParams && !simIds?.length) exit('You are missing a required paramter: --sim')
   if (!isWritingToStdoutOrFile) exit('You are missing a required parameters: Either write to file (--filename), or to standard output (-)')
@@ -124,11 +125,14 @@ function connect () {
   socket.on('subscribe-error', onerror)
 
   socket.on('disconnect', err => {
-    const isTransportError = 'transport error'
+    const isTransportError = 'transport error' && unAuthenticatedTransportErrorCount < 5
     const hasServerForcefullyDisconnectedClient = err === 'io server disconnect'
     if (hasServerForcefullyDisconnectedClient && isAuthenticated) return console.error('The server disconnected you')
     if (hasServerForcefullyDisconnectedClient && !isAuthenticated) return console.error('The server disconnected you. Is the api key correct?')
-    if (isTransportError && !isAuthenticated) return
+    if (isTransportError && !isAuthenticated) {
+      unAuthenticatedTransportErrorCount += 1
+      return
+    }
 
     console.error('Connection closed. Trying to re-establish')
     socket.disconnect()
@@ -136,6 +140,7 @@ function connect () {
   })
 
   socket.on('authenticated', () => {
+    unAuthenticatedTransportErrorCount = 0
     isAuthenticated = true
     console.error('Connected and authenticated')
     simIds.forEach(simId => socket.emit('subscribe:packets', simId))
