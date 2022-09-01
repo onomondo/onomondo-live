@@ -8,6 +8,7 @@ const log = require('single-line-log').stderr
 const pkgJson = require('./package.json')
 const getPackageJson = require('package-json')
 const cookie = require('cookie')
+const formatDate = require('date-fns').format
 
 const ALLOWED_PARAMS = ['token', 'key', 'sim', 'filename', 'api', '-', '_']
 
@@ -118,7 +119,7 @@ function connect () {
       exit('Authenticated failed. Api key is incorrect')
     }
 
-    console.error(`Error: ${err}`)
+    print(`Error: ${err}`)
   }
 
   socket.on('error', onerror)
@@ -127,15 +128,15 @@ function connect () {
   socket.on('disconnect', err => {
     const isTransportError = 'transport error' && unAuthenticatedTransportErrorCount < 5
     const hasServerForcefullyDisconnectedClient = err === 'io server disconnect'
-    if (hasServerForcefullyDisconnectedClient && isAuthenticated) return console.error('The server disconnected you')
-    if (hasServerForcefullyDisconnectedClient && !isAuthenticated) return console.error('The server disconnected you. Is the api key correct?')
+    if (hasServerForcefullyDisconnectedClient && isAuthenticated) return print('The server disconnected you')
+    if (hasServerForcefullyDisconnectedClient && !isAuthenticated) return print('The server disconnected you. Is the api key correct?')
     if (isTransportError && !isAuthenticated) {
       unAuthenticatedTransportErrorCount += 1
       return
     }
 
-    console.error('Connection closed. Trying to re-establish')
     isAuthenticated = false
+    print('Connection closed. Trying to re-establish')
     socket.disconnect()
     setTimeout(connect, 1000)
   })
@@ -143,12 +144,12 @@ function connect () {
   socket.on('authenticated', () => {
     unAuthenticatedTransportErrorCount = 0
     isAuthenticated = true
-    console.error('Connected and authenticated')
+    print('Connected and authenticated')
     simIds.forEach(simId => socket.emit('subscribe:packets', simId))
   })
 
   socket.on('subscribed:packets', ({ simId, ip }) => {
-    console.error(`Attached. SIM id=${simId}. ip=${ip}`)
+    print(`Attached. SIM id=${simId}. ip=${ip}`)
   })
 
   socket.on('packets', ({ packet: hexString }) => {
@@ -158,10 +159,15 @@ function connect () {
     capturedPackets += 1
     capturedBytes += packet.length
 
-    log(`Captured: ${capturedPackets} packet${capturedPackets === 1 ? '' : 's'} (${prettyBytes(capturedBytes)})`)
+    log(`Captured: ${capturedPackets} packet${capturedPackets === 1 ? '' : 's'} (${prettyBytes(capturedBytes)})\n`)
 
     pcapGenerator.appendPacket({ packet, filename, timestamp, stdout: isWritingToStdout })
   })
+}
+
+function print (str) {
+  const timestamp = formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss')
+  console.error(`[${timestamp}] ${str}`)
 }
 
 function exit (err) {
