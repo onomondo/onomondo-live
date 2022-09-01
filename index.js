@@ -135,6 +135,7 @@ function connect () {
     }
 
     console.error('Connection closed. Trying to re-establish')
+    isAuthenticated = false
     socket.disconnect()
     setTimeout(connect, 1000)
   })
