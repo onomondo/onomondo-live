@@ -4,6 +4,7 @@
   "repository": "git@github.com:onomondo/onomondo-live.git",
   "version": "4.0.6",
   "main": "index.js",
+  "type": "module",
   "engines": {
     "node": ">=14.8.0"
   },
