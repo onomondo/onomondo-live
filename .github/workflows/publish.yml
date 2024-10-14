@@ -20,7 +20,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
-        run: yarn
+        run: yarn --frozen-lockfile
 
       - name: Publish package on NPM
         run: npm publish
