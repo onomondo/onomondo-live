@@ -83,6 +83,8 @@ function connect () {
   const socket = io(apiUrl, {
     path: '/monitor',
     withCredentials: true,
+    transports: ['websocket', 'polling'],
+    tryAllTransports: true,
     extraHeaders: {
       'user-agent': `node-XMLHttpRequest onomondo-live/v${pkgJson.version}`
     }
