@@ -1,7 +1,8 @@
 // Generator for the pcap file format, https://wiki.wireshark.org/Development/LibpcapFileFormat
-const fs = require('fs')
+import fs from 'node:fs'
+import { Buffer } from 'node:buffer'
 
-module.exports = {
+export default {
   writeHeader ({ filename, stdout }) {
     const opts = {
       magicNumber: 2712847316,
