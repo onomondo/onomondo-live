@@ -27,10 +27,12 @@ let unAuthenticatedTransportErrorCount = 0
 
 checkPrerequisites().then(run)
 
-async function checkPrerequisites () {
+async function checkPrerequisites() {
   const publicVersion = await getPublicVersion()
   const isUsingCorrectVersion = pkgJson.version === publicVersion
-  const disallowedParams = allParams.filter(param => !ALLOWED_PARAMS.includes(param))
+  const disallowedParams = allParams.filter(
+    param => !ALLOWED_PARAMS.includes(param)
+  )
   const hasAllRequiredParams = apiKey && simIds?.length
   const hasOnlyAllowedParams = disallowedParams.length === 0
   const hasNoParameters = allParams.includes('_') && allParams.length === 1
@@ -39,39 +41,52 @@ async function checkPrerequisites () {
   const areSimsCorrectLength = simIds?.filter(id => id.length === 9).length > 0
 
   if (isUsingCorrectVersion) console.error(`Onomondo Live ${pkgJson.version}\n`)
-  if (!isUsingCorrectVersion) console.error(`Onomondo Live ${pkgJson.version}. You are currently using an outdated version. The latest is ${publicVersion}.\n`)
+  if (!isUsingCorrectVersion)
+    console.error(
+      `Onomondo Live ${pkgJson.version}. You are currently using an outdated version. The latest is ${publicVersion}.\n`
+    )
   if (hasNoParameters) {
-    exit([
-      'Use onomondo-live to capture all data between devices and the Onomondo network, seen from the Onomondo\'s perspective.',
-      'Output to a pcap file, or pipe to another tool that can read pcap files (like Wireshark).',
-      '',
-      'Write to file:',
-      'onomondo-live --key=a1b2c3 --sim=012345678 --filename=output.pcap',
-      '',
-      'Write to standard output:',
-      'onomondo-live --key=a1b2c3 --sim=012345678 -',
-      '',
-      'Pipe to Wireshark:',
-      'onomondo-live --key=a1b2c3 --sim=012345678 - | wireshark -k -i -',
-      '',
-      'You need to use the id of one or more of your sims, and an Onomondo api key.',
-      'You can generate an api key in the app, https://app.onomondo.com.',
-      '',
-      'If you want to listen to multiple sims you can supply multiple --sim params, like this: --sim=111111111 --sim=222222222'
-    ].join('\n'))
+    exit(
+      [
+        "Use onomondo-live to capture all data between devices and the Onomondo network, seen from the Onomondo's perspective.",
+        'Output to a pcap file, or pipe to another tool that can read pcap files (like Wireshark).',
+        '',
+        'Write to file:',
+        'onomondo-live --key=a1b2c3 --sim=012345678 --filename=output.pcap',
+        '',
+        'Write to standard output:',
+        'onomondo-live --key=a1b2c3 --sim=012345678 -',
+        '',
+        'Pipe to Wireshark:',
+        'onomondo-live --key=a1b2c3 --sim=012345678 - | wireshark -k -i -',
+        '',
+        'You need to use the id of one or more of your sims, and an Onomondo api key.',
+        'You can generate an api key in the app, https://app.onomondo.com.',
+        '',
+        'If you want to listen to multiple sims you can supply multiple --sim params, like this: --sim=111111111 --sim=222222222'
+      ].join('\n')
+    )
   }
-  if (!hasOnlyAllowedParams) exit(`You are using illegal parameters: ${disallowedParams.join(', ')}`)
-  if (!hasAllRequiredParams && !apiKey) exit('You are missing a required parameter: --key')
-  if (!hasAllRequiredParams && !simIds?.length) exit('You are missing a required paramter: --sim')
-  if (!isWritingToStdoutOrFile) exit('You are missing a required parameters: Either write to file (--filename), or to standard output (-)')
-  if (isWritingToStdoutAndFile) exit('You need to either write to file, or to standard output. Not both.')
-  if (!areSimsCorrectLength) exit('Some of the sims are not exactly 9 digits long')
+  if (!hasOnlyAllowedParams)
+    exit(`You are using illegal parameters: ${disallowedParams.join(', ')}`)
+  if (!hasAllRequiredParams && !apiKey)
+    exit('You are missing a required parameter: --key')
+  if (!hasAllRequiredParams && !simIds?.length)
+    exit('You are missing a required paramter: --sim')
+  if (!isWritingToStdoutOrFile)
+    exit(
+      'You are missing a required parameters: Either write to file (--filename), or to standard output (-)'
+    )
+  if (isWritingToStdoutAndFile)
+    exit('You need to either write to file, or to standard output. Not both.')
+  if (!areSimsCorrectLength)
+    exit('Some of the sims are not exactly 9 digits long')
 }
 
-function run () {
+function run() {
   if (isWritingToStdout) {
     // Kill process if the process piped to is closed, and not writing to a file
-    process.stdout.on('error', () => { }) // ignore errors
+    process.stdout.on('error', () => {}) // ignore errors
     process.stdout.on('close', () => process.exit(0))
   }
 
@@ -79,7 +94,7 @@ function run () {
   connect()
 }
 
-function connect () {
+function connect() {
   const socket = io(apiUrl, {
     path: '/monitor',
     withCredentials: true,
@@ -114,7 +129,7 @@ function connect () {
     socket.emit('authenticate', apiKey)
   })
 
-  function onerror (err) {
+  function onerror(err) {
     const isNotAuthenticated = err === 'Not authenticated'
 
     if (isNotAuthenticated) {
@@ -128,10 +143,13 @@ function connect () {
   socket.on('subscribe-error', onerror)
 
   socket.on('disconnect', err => {
-    const isTransportError = 'transport error' && unAuthenticatedTransportErrorCount < 5
+    const isTransportError =
+      'transport error' && unAuthenticatedTransportErrorCount < 5
     const hasServerForcefullyDisconnectedClient = err === 'io server disconnect'
-    if (hasServerForcefullyDisconnectedClient && isAuthenticated) return print('The server disconnected you')
-    if (hasServerForcefullyDisconnectedClient && !isAuthenticated) return print('The server disconnected you. Is the api key correct?')
+    if (hasServerForcefullyDisconnectedClient && isAuthenticated)
+      return print('The server disconnected you')
+    if (hasServerForcefullyDisconnectedClient && !isAuthenticated)
+      return print('The server disconnected you. Is the api key correct?')
     if (isTransportError && !isAuthenticated) {
       unAuthenticatedTransportErrorCount += 1
       return
@@ -147,7 +165,9 @@ function connect () {
     unAuthenticatedTransportErrorCount = 0
     isAuthenticated = true
     print('Connected and authenticated')
-    simIds.forEach(simId => socket.emit('subscribe:packets', simId))
+    simIds.forEach(simId => {
+      socket.emit('subscribe:packets', simId)
+    })
   })
 
   socket.on('subscribed:packets', ({ simId, ip }) => {
@@ -161,25 +181,34 @@ function connect () {
     capturedPackets += 1
     capturedBytes += packet.length
 
-    log(`Captured: ${capturedPackets} packet${capturedPackets === 1 ? '' : 's'} (${prettyBytes(capturedBytes)})\n`)
+    log(
+      `Captured: ${capturedPackets} packet${capturedPackets === 1 ? '' : 's'} (${prettyBytes(capturedBytes)})\n`
+    )
 
-    pcapGenerator.appendPacket({ packet, filename, timestamp, stdout: isWritingToStdout })
+    pcapGenerator.appendPacket({
+      packet,
+      filename,
+      timestamp,
+      stdout: isWritingToStdout
+    })
   })
 }
 
-function print (str) {
+function print(str) {
   const timestamp = formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss')
   console.error(`[${timestamp}] ${str}`)
 }
 
-function exit (err) {
+function exit(err) {
   console.error(err)
   console.error()
-  console.error('See https://github.com/onomondo/onomondo-live for more information')
+  console.error(
+    'See https://github.com/onomondo/onomondo-live for more information'
+  )
   process.exit(1)
 }
 
-async function getPublicVersion () {
+async function getPublicVersion() {
   const pkgJson = await getPackageJson('onomondo-live')
   return pkgJson.version
 }

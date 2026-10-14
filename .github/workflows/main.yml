@@ -13,10 +13,10 @@ jobs:
       with:
         node-version: '16.x'
 
-    - name: yarn install
+    - name: npm ci
       run: |
-        yarn --frozen-lockfile
+        npm ci
 
     - name: lint
       run: |
-        yarn lint
+        npm run lint
