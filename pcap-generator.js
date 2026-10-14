@@ -2,7 +2,7 @@
 const fs = require('fs')
 
 module.exports = {
-  writeHeader ({ filename, stdout }) {
+  writeHeader({ filename, stdout }) {
     const opts = {
       magicNumber: 2712847316,
       majorVersion: 2,
@@ -25,7 +25,7 @@ module.exports = {
     if (stdout) process.stdout.write(header)
     if (filename) fs.writeFileSync(filename, header)
   },
-  appendPacket ({ filename, stdout, timestamp, packet }) {
+  appendPacket({ filename, stdout, timestamp, packet }) {
     const packetHeader = Buffer.alloc(16)
     const seconds = Math.floor(timestamp / 1000)
     const microseconds = Math.floor(((timestamp / 1000) % 1) * 1000000)
