@@ -26,9 +26,6 @@
       "correctness": {
         "noUnusedVariables": "error",
         "noUnusedFunctionParameters": "error"
-      },
-      "style": {
-        "useNodejsImportProtocol": "off"
       }
     }
   }

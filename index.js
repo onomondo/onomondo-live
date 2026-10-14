@@ -1,14 +1,16 @@
 #!/usr/bin/env node
 
-const pcapGenerator = require('./pcap-generator')
-const io = require('socket.io-client')
-const minimist = require('minimist')
-const prettyBytes = require('pretty-bytes')
-const log = require('single-line-log').stderr
-const pkgJson = require('./package.json')
-const getPackageJson = require('package-json')
-const cookie = require('cookie')
-const formatDate = require('date-fns').format
+import { parseSetCookie } from 'cookie'
+import { format as formatDate } from 'date-fns'
+import minimist from 'minimist'
+import getPackageJson from 'package-json'
+import prettyBytes from 'pretty-bytes'
+import singleLineLog from 'single-line-log'
+import { io } from 'socket.io-client'
+import pkgJson from './package.json' with { type: 'json' }
+import pcapGenerator from './pcap-generator.js'
+
+const log = singleLineLog.stderr
 
 const ALLOWED_PARAMS = ['token', 'key', 'sim', 'filename', 'api', '-', '_']
 
@@ -115,9 +117,9 @@ function connect() {
 
       cookieHeader.forEach(cookieString => {
         if (cookieString.includes(`${COOKIE_NAME}=`)) {
-          const cookieValue = cookie.parse(cookieString)
+          const { value: cookieValue } = parseSetCookie(cookieString)
           socket.io.opts.extraHeaders = {
-            cookie: `${COOKIE_NAME}=${cookieValue[COOKIE_NAME]}`,
+            cookie: `${COOKIE_NAME}=${cookieValue}`,
             'user-agent': `node-XMLHttpRequest onomondo-live/v${pkgJson.version}`
           }
         }
