@@ -1,14 +1,16 @@
 #!/usr/bin/env node
 
-const pcapGenerator = require('./pcap-generator')
-const io = require('socket.io-client')
-const minimist = require('minimist')
-const prettyBytes = require('pretty-bytes')
-const log = require('single-line-log').stderr
-const pkgJson = require('./package.json')
-const getPackageJson = require('package-json')
-const cookie = require('cookie')
-const formatDate = require('date-fns').format
+import process from 'node:process'
+import { Buffer } from 'node:buffer'
+import pcapGenerator from './pcap-generator.js'
+import io from 'socket.io-client'
+import minimist from 'minimist'
+import prettyBytes from 'pretty-bytes'
+import { stderr as log } from 'single-line-log'
+import pkgJson from './package.json' assert { type: 'json' }
+import getPackageJson from 'package-json'
+import cookie from 'cookie'
+import { format as formatDate } from 'date-fns'
 
 const ALLOWED_PARAMS = ['token', 'key', 'sim', 'filename', 'api', '-', '_']
 
